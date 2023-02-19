@@ -1,0 +1,21 @@
+server:
+  port: 9999
+  servlet:
+    context-path: /shop/api/v1
+
+spring:
+  datasource:
+    url: ENC(IN4Fy7ADzoRKnta28I/JaqBFgH+9PTpoCsiYq3mmHQT7ojhNcoCqHelUnQZGFniSZ2bfj3C6pcAV510H0t8QT91us9YyOZPtJoAnaeDKqEE=)
+    username: ENC(nZKo5eAdivkDNh0ShYxTwA==)
+    password: ENC(QPyoBltYN0s88hSzrPCZASqTKqAL8YadUpLrZQ4kctU=)
+    driver-class-name: org.mariadb.jdbc.Driver
+
+
+mybatis-plus:
+  type-aliases-package: com.phoneshop.shop.entity
+  global-config:
+    db-config:
+      id-type: auto
+
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
