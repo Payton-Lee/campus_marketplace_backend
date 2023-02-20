@@ -5,14 +5,14 @@ server:
 
 spring:
   datasource:
-    url: ENC(IN4Fy7ADzoRKnta28I/JaqBFgH+9PTpoCsiYq3mmHQT7ojhNcoCqHelUnQZGFniSZ2bfj3C6pcAV510H0t8QT91us9YyOZPtJoAnaeDKqEE=)
-    username: ENC(nZKo5eAdivkDNh0ShYxTwA==)
-    password: ENC(QPyoBltYN0s88hSzrPCZASqTKqAL8YadUpLrZQ4kctU=)
+    url: jdbc:mysql://localhost:3306/campus_marketplace?serverTimezone=UTC
+    username: root
+    password: 123456
     driver-class-name: org.mariadb.jdbc.Driver
 
 
 mybatis-plus:
-  type-aliases-package: com.phoneshop.shop.entity
+  type-aliases-package: cn.com.campus.marketplace.entity
   global-config:
     db-config:
       id-type: auto

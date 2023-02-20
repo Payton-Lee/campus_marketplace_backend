@@ -4,8 +4,8 @@ import cn.com.campus.marketplace.entity.enums.ReturnCode;
 import cn.com.campus.marketplace.entity.result.ResultData;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWTUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,7 +16,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         if(request.getMethod().equals("OPTIONS")) return true;
         String token = request.getHeader("Authorization");
         try {
-            if (!token.isBlank() && JWTUtil.verify(token, "peytonlee".getBytes())) {
+            if (!token.isBlank() && JWTUtil.verify(token, "xiebing".getBytes())) {
                 return true;
             }
         }catch (Exception ignored) {

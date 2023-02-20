@@ -18,8 +18,6 @@ public class User {
     private String email;
     private String sex;
     private String telephone;
-    private String hobby;
-    private String introduce;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private Integer state;
