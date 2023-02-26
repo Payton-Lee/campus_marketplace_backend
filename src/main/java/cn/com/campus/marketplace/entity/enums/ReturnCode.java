@@ -14,7 +14,8 @@ public enum ReturnCode {
     USERNAME_ERROR(1002,"用户名错误"),
     PASSWORD_ERROR(1003, "密码错误"),
     USER_DENIED(1004, "用户被禁用"),
-    USER_NO_LOGIN(1005,"用户未登录");
+    USER_NO_LOGIN(1005,"用户未登录"),
+    ORDER_NO_EXIST(1006, "订单不存在");
     public final int code;
     public final String message;
 }
