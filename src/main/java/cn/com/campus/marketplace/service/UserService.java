@@ -1,6 +1,7 @@
 package cn.com.campus.marketplace.service;
 
 import cn.com.campus.marketplace.entity.User;
+import cn.com.campus.marketplace.entity.vo.UserRoleVo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,5 +15,5 @@ public interface UserService extends IService<User> {
     User getUserExceptPassword(Integer userId);
     Integer getTokenUserId(String token);
     Page<User> pageUserExceptPassword(Integer current, Integer size, String queryInfo);
-//    UserRoleVo findUserRoleByUserId(Integer userId);
+    UserRoleVo findUserRoleByUserId(Integer userId);
 }

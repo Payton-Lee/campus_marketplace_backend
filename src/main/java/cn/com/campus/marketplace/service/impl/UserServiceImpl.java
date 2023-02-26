@@ -1,6 +1,7 @@
 package cn.com.campus.marketplace.service.impl;
 
 import cn.com.campus.marketplace.entity.User;
+import cn.com.campus.marketplace.entity.vo.UserRoleVo;
 import cn.com.campus.marketplace.mapper.UserMapper;
 import cn.com.campus.marketplace.service.RoleService;
 import cn.com.campus.marketplace.service.UserService;
@@ -92,5 +93,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         wrapper.select(User.class, info -> !info.getColumn().equals("password"));
         return page(page, wrapper);
+    }
+
+    @Override
+    public UserRoleVo findUserRoleByUserId(Integer userId) {
+        return userMapper.findUserRoleByUserId(userId);
     }
 }
