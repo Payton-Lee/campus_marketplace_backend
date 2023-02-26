@@ -15,7 +15,9 @@ public enum ReturnCode {
     PASSWORD_ERROR(1003, "密码错误"),
     USER_DENIED(1004, "用户被禁用"),
     USER_NO_LOGIN(1005,"用户未登录"),
-    ORDER_NO_EXIST(1006, "订单不存在");
+    ORDER_NO_EXIST(1006, "订单不存在"),
+    GOODS_NO_EXIST(1007, "订单不存在"),
+    CONSIGNEE_NO_EXIST(1008, "地址不存在");
     public final int code;
     public final String message;
 }

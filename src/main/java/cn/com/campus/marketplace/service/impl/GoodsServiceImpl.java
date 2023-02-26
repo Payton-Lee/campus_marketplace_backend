@@ -9,8 +9,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements GoodsService {
+    private GoodsMapper goodsMapper;
     @Override
     public Page<Goods> pageGoodsList(Integer current, Integer size, String queryInfo) {
         QueryWrapper<Goods> wrapper = new QueryWrapper<>();
@@ -20,5 +23,15 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         }
         wrapper.eq("is_deleted", 1);
         return page(page, wrapper);
+    }
+
+    @Override
+    public List<Goods> getGoodsList(String queryInfo) {
+        QueryWrapper<Goods> wrapper = new QueryWrapper<>();
+        if(!StringUtils.isEmpty(queryInfo)) {
+            wrapper.like("goods", queryInfo);
+        }
+        wrapper.eq("is_deleted", 1).eq("goods_state", 1);
+        return goodsMapper.findGoodsList(wrapper);
     }
 }

@@ -1,5 +1,6 @@
 package cn.com.campus.marketplace.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,8 @@ public class Goods {
     private String goodsIntroduce;
     private Integer isDeleted;
     private LocalDateTime addTime;
+    @TableField(exist = false)
+    private String image;
     private LocalDateTime updateTime;
     private LocalDateTime deleteTime;
     private Integer goodsState;

@@ -18,4 +18,9 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
     public List<OrderItem> listGoodsByOrderId(Integer orderId) {
         return orderItemMapper.findOrderItemListByOrderId(orderId);
     }
+
+    @Override
+    public List<OrderItem> getOrderItemListByUserId(Integer userId, Integer orderId) {
+        return orderItemMapper.findOrderItemListByOrderIdAndUserId(userId, orderId);
+    }
 }
