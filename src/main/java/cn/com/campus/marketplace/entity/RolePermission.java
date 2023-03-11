@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("ps_role_permission")
+@TableName("cm_role_permission")
 public class RolePermission {
     private Integer id;
     private Integer roleId;

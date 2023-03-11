@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -88,6 +89,10 @@ public class UserManageController {
         if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC110.name)) {
             Dict data = Dict.create();
             boolean flag = false;
+            User userInDB = userService.getUserExceptPassword(userId);
+            if (Objects.isNull(userInDB)) {
+                return ResultData.fail(ReturnCode.USERNAME_NOT_EXIST.code, ReturnCode.USERNAME_NOT_EXIST.message);
+            }
             if (userRoleService.getUserRoleCount(userId) != 0) {
                 if (userRoleService.deleteUserRoleByUserId(userId)){
                     flag = userRoleService.saveUserRole(userId, roleIds);
@@ -96,7 +101,9 @@ public class UserManageController {
                 flag = userRoleService.saveUserRole(userId, roleIds);
             }
             if (flag) {
-                data.set("msg", "用户角色分配成功");
+                userInDB.setUpdateTime(LocalDateTime.now());
+                userService.updateById(userInDB);
+                data.set("msg", "用户角色分配成功").set("user", userInDB);
                 return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC201.message, data);
             }
             return ResultData.fail(ReturnCode.RC999.code, ReturnCode.RC999.message);

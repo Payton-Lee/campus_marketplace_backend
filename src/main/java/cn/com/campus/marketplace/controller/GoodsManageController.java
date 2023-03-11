@@ -11,6 +11,8 @@ import cn.com.campus.marketplace.service.ImageService;
 import cn.com.campus.marketplace.service.PermissionService;
 import cn.com.campus.marketplace.utils.CodeGenerateUtils;
 import cn.hutool.core.lang.Dict;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/goods")
@@ -63,7 +66,7 @@ public class GoodsManageController {
             goods.setIsDeleted(1);
             goods.setAddTime(LocalDateTime.now());
             if(goodsService.save(goods)) {
-                data.set("msg", "添加商品成功").set("goods", goods.getGoods());
+                data.set("msg", "添加商品成功").set("goods", goodsService.getOne(Wrappers.<Goods>lambdaQuery().eq(Goods::getGoods, goods.getGoods())));
                 return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC201.message, data);
             }
             data.set("msg", "添加商品失败").set("goods", goods.getGoods());
@@ -83,7 +86,7 @@ public class GoodsManageController {
             }
             if(goodsService.updateById(goods)) {
                 goods.setUpdateTime(LocalDateTime.now());
-                data.set("msg", "编辑商品信息成功").set("goods", goods.getGoods());
+                data.set("msg", "编辑商品信息成功").set("goods", goods);
                 return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC201.message, data);
             }
             data.set("msg", "编辑商品信息失败").set("goods", goods.getGoods());
@@ -105,7 +108,7 @@ public class GoodsManageController {
                 goodsInDB.setUpdateTime(LocalDateTime.now());
                 goodsInDB.setGoodsState(goodsState);
                 if(goodsService.updateById(goodsInDB)) {
-                    data.set("msg", "商品状态修改成功").set("goods", goodsInDB.getGoods());
+                    data.set("msg", "商品状态修改成功").set("goods", goodsInDB);
                     return ResultData.fail(ReturnCode.RC201.code, ReturnCode.RC201.message, data);
                 }
                 data.set("msg", "商品状态修改失败").set("goods", goodsInDB.getGoods());
@@ -164,7 +167,7 @@ public class GoodsManageController {
                     throw new IOException("Failed to create directory:" + path, e);
                 }
             }
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             Path filePath = path.resolve(fileName);
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -182,7 +185,7 @@ public class GoodsManageController {
         if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC117.name)) {
             Dict data = Dict.create();
             if (imageService.save(image)) {
-                data.set("msg", "上传图片信息成功").set("image", image.getImage());
+                data.set("msg", "上传图片信息成功").set("image", image);
                 return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC200.message, data);
             } else {
                 return ResultData.fail(ReturnCode.RC999.code, ReturnCode.RC999.message);
@@ -218,7 +221,7 @@ public class GoodsManageController {
         if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC119.name)) {
             Image imageDB = imageService.getById(imageId);
             Dict data = Dict.create();
-            if(imageDB != null) {
+            if (imageDB != null) {
                 if(imageService.removeById(imageId)){
                     data.set("msg", "商品图片删除成功");
                     return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC201.message, data);

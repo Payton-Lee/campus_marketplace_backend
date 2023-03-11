@@ -28,11 +28,6 @@ public class ShoppingController {
     private UserService userService;
     private ConsigneeService consigneeService;
 
-    @Autowired
-    public void setPermissionService(PermissionService permissionService) {
-        this.permissionService = permissionService;
-    }
-
     @GetMapping("/goodsList")
     public Object getGoodsList(HttpServletRequest request, @RequestParam String queryInfo) {
         if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC124.name)) {
@@ -132,5 +127,4 @@ public class ShoppingController {
             return ResultData.fail(ReturnCode.USERNAME_NOT_EXIST.code, ReturnCode.USERNAME_NOT_EXIST.message);
         }
     }
-
 }

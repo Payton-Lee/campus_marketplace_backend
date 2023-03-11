@@ -3,16 +3,20 @@ package cn.com.campus.marketplace.controller;
 import cn.com.campus.marketplace.entity.User;
 import cn.com.campus.marketplace.entity.enums.ReturnCode;
 import cn.com.campus.marketplace.entity.result.ResultData;
+import cn.com.campus.marketplace.entity.vo.UserRoleVo;
 import cn.com.campus.marketplace.service.PermissionService;
 import cn.com.campus.marketplace.service.RoleService;
 import cn.com.campus.marketplace.service.UserService;
 import cn.hutool.core.lang.Dict;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.swing.plaf.PanelUI;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 public class LoginRegController {
@@ -23,6 +27,20 @@ public class LoginRegController {
     public void setUserService(UserService userService){
         this.userService = userService;
     }
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
+    }
+
+    @Autowired
+    public void setPermissionService(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
+
+    @GetMapping("/index")
+    public String index(){
+        return "hello world!";
+    }
 
     @PostMapping("/admin/login")
     public Object adminLogin(@RequestBody User user) {
@@ -32,7 +50,7 @@ public class LoginRegController {
             return ResultData.fail(ReturnCode.USERNAME_ERROR.code, ReturnCode.USERNAME_ERROR.message);
         } else {
             User userInDB = userService.getByUserName(user.getUsername());
-            var userRoleVos = roleService.findRoleListByUserId(user.getId());
+            List<UserRoleVo> userRoleVos = roleService.findRoleListByUserId(user.getId());
             if(userRoleVos.stream().flatMap(userRoleVo -> permissionService.findPermissionByRoleId(userRoleVo.getRoleId()).stream())
                     .anyMatch(rolePermissionVo -> rolePermissionVo.getType() == 3)) {
                 return ResultData.fail(ReturnCode.USER_DENIED.code, ReturnCode.USER_DENIED.message);

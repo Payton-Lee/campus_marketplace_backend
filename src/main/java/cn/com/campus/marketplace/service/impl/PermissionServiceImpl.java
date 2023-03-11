@@ -20,7 +20,9 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
 
     @Autowired
     private PermissionMapper permissionMapper;
+    @Autowired
     private RoleService roleService;
+    @Autowired
     private UserService userService;
     @Override
     public List<RolePermissionVo> findPermissionByRoleId(Integer roleId) {

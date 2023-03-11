@@ -8,6 +8,7 @@ import cn.com.campus.marketplace.service.PermissionService;
 import cn.com.campus.marketplace.service.RolePermissionService;
 import cn.com.campus.marketplace.service.RoleService;
 import cn.hutool.core.lang.Dict;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/permission")
 public class PermissionManagerController {
+    @Autowired
     private RoleService roleService;
+    @Autowired
     private PermissionService permissionService;
+    @Autowired
     private RolePermissionService rolePermissionService;
 
     @GetMapping("/permissionList")

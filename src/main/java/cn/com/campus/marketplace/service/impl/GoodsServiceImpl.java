@@ -7,12 +7,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements GoodsService {
+    @Autowired
     private GoodsMapper goodsMapper;
     @Override
     public Page<Goods> pageGoodsList(Integer current, Integer size, String queryInfo) {
@@ -22,7 +24,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             wrapper.like("goods", queryInfo);
         }
         wrapper.eq("is_deleted", 1);
-        return page(page, wrapper);
+        return goodsMapper.findGoodsList(page, wrapper);
     }
 
     @Override

@@ -2,6 +2,7 @@ package cn.com.campus.marketplace.config;
 
 import cn.com.campus.marketplace.interceptor.TokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@Configuration
 public class WebMcvConfig implements WebMvcConfigurer {
     private TokenInterceptor tokenInterceptor;
 
@@ -20,7 +22,7 @@ public class WebMcvConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(tokenInterceptor).addPathPatterns("/**").excludePathPatterns("/login", "/image/*", "/register");
+        registry.addInterceptor(tokenInterceptor).addPathPatterns("/**").excludePathPatterns("/admin/*", "/image/*", "/user/login", "/user/register", "/buy/goodsList");
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 
