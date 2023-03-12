@@ -126,7 +126,7 @@ public class PermissionManagerController {
 
     @PutMapping("/{roleId}/rolePermission")
     public Object editRolePermission(HttpServletRequest request, @PathVariable Integer roleId, @RequestParam String permissionIds) {
-        if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC105.name)) {
+        if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC106.name)) {
             Dict data =  Dict.create();
             boolean flag = false;
             if(permissionIds.length() == 0) {
