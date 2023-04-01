@@ -9,4 +9,5 @@ import java.util.List;
 public interface ConsigneeService extends IService<Consignee> {
     UserConsigneeVo findUserConsigneeByConsigneeId(Integer consigneeId);
     List<UserConsigneeVo> findUserConsigneeByUserId(Integer userId);
+    Object saveNewConsignee(Consignee consignee);
 }

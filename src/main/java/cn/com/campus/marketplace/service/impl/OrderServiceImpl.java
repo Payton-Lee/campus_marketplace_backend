@@ -6,6 +6,7 @@ import cn.com.campus.marketplace.entity.Order;
 import cn.com.campus.marketplace.entity.OrderItem;
 import cn.com.campus.marketplace.mapper.OrderItemMapper;
 import cn.com.campus.marketplace.mapper.OrderMapper;
+import cn.com.campus.marketplace.service.CartService;
 import cn.com.campus.marketplace.service.GoodsService;
 import cn.com.campus.marketplace.service.OrderItemService;
 import cn.com.campus.marketplace.service.OrderService;
@@ -21,15 +22,21 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
+    @Autowired
     private OrderMapper orderMapper;
+    @Autowired
     private OrderItemMapper orderItemMapper;
+    @Autowired
     private OrderItemService orderItemService;
-
+    @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private CartService cartService;
 
     @Autowired
     protected void setOrderMapper(OrderMapper orderMapper) {
@@ -80,7 +87,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setConsigneeId(consigneeId);
         List<OrderItem> orderItemList = new ArrayList<>();
         double price = 0.0;
-        for (Cart cart: cartList) {
+        for (Cart cart : cartList) {
             OrderItem orderItem = new OrderItem();
             orderItem.setGoodsId(cart.getGoodsId());
             orderItem.setCount(cart.getCount());
@@ -94,11 +101,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setCreateTime(LocalDateTime.now());
         order.setUpdateTime(LocalDateTime.now());
         if (save(order)) {
-           orderItemList.stream().map(info -> {
-               info.setOrderId(order.getId());
-               return info;
-           });
-           return orderItemService.saveBatch(orderItemList);
+            System.out.println(order.getId());
+            orderItemList = orderItemList.stream().peek(info -> info.setOrderId(order.getId())).collect(Collectors.toList());
+            QueryWrapper<Cart> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("user_id", userId);
+            cartService.remove(queryWrapper);
+            return orderItemService.saveBatch(orderItemList);
         }
         return false;
     }

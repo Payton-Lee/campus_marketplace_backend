@@ -18,14 +18,20 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/order")
 public class OrderManageController {
+    @Autowired
     private OrderService orderService;
+    @Autowired
     private PermissionService permissionService;
+    @Autowired
     private ConsigneeService consigneeService;
+    @Autowired
     private OrderItemService orderItemService;
+
     @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
     }
+
     @Autowired
     public void setPermissionService(PermissionService permissionService) {
         this.permissionService = permissionService;
@@ -40,21 +46,22 @@ public class OrderManageController {
     public void setOrderItemService(OrderItemService orderItemService) {
         this.orderItemService = orderItemService;
     }
+
     @GetMapping("/orderList")
     public Object orderList(HttpServletRequest request, @RequestParam Integer current, @RequestParam Integer size) {
-        if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC120.name)) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC120.name)) {
             return orderService.pageOrderList(current, size);
         } else {
             return ResultData.fail(ReturnCode.ACCESS_DENIED.code, ReturnCode.ACCESS_DENIED.message);
         }
     }
 
-    @PostMapping("/getGoodsByOrderId/{orderId}")
+    @GetMapping("/getGoodsByOrderId/{orderId}")
     public Object getGoodsByOrderId(HttpServletRequest request, @PathVariable Integer orderId) {
-        if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC120.name)) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC120.name)) {
             Dict data = Dict.create();
             Order orderInDB = orderService.getById(orderId);
-            if(!Objects.isNull(orderInDB)) {
+            if (!Objects.isNull(orderInDB)) {
                 return orderItemService.listGoodsByOrderId(orderId);
             } else {
                 data.set("msg", "订单不存在");
@@ -67,12 +74,12 @@ public class OrderManageController {
 
     @PutMapping("/{orderId}/orderSend/{isSend}")
     public Object orderSend(HttpServletRequest request, @PathVariable Integer orderId, @PathVariable Integer isSend) {
-        if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC121.name)) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC121.name)) {
             Dict data = Dict.create();
             Order orderInDB = orderService.getById(orderId);
-            if (orderInDB.getPayStatus() != 1) {
+            if (orderInDB.getPayStatus().equals(1)) {
                 orderInDB.setIsSend(isSend);
-                if(orderService.updateById(orderInDB)) {
+                if (orderService.updateById(orderInDB)) {
                     data.set("msg", "发货成功");
                     return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC201.message, data);
                 } else {
@@ -87,10 +94,27 @@ public class OrderManageController {
         }
     }
 
+    @PutMapping("/{orderId}/orderPay/{payStatus}")
+    public Object orderPay(HttpServletRequest request, @PathVariable Integer orderId, @PathVariable Integer payStatus) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC121.name)) {
+            Dict data = Dict.create();
+            Order orderInDB = orderService.getById(orderId);
+            orderInDB.setPayStatus(payStatus);
+            if (orderService.updateById(orderInDB)) {
+                data.set("msg", "更改付款状态成功");
+                return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC201.message, data);
+            } else {
+                return ResultData.fail(ReturnCode.RC999.code, ReturnCode.RC999.message);
+            }
+        } else {
+            return ResultData.fail(ReturnCode.ACCESS_DENIED.code, ReturnCode.ACCESS_DENIED.message);
+        }
+    }
+
 
     @GetMapping("/currentConsignee")
     public Object getCurrentConsigneeById(HttpServletRequest request, @RequestParam Integer consigneeId) {
-        if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC122.name)) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC122.name)) {
             return consigneeService.findUserConsigneeByConsigneeId(consigneeId);
         } else {
             return ResultData.fail(ReturnCode.ACCESS_DENIED.code, ReturnCode.ACCESS_DENIED.message);
@@ -99,7 +123,7 @@ public class OrderManageController {
 
     @GetMapping("/consigneeList")
     public Object getConsigneeListByUserId(HttpServletRequest request, @RequestParam Integer userId) {
-        if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC122.name)) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC122.name)) {
             return consigneeService.findUserConsigneeByUserId(userId);
         } else {
             return ResultData.fail(ReturnCode.ACCESS_DENIED.code, ReturnCode.ACCESS_DENIED.message);
@@ -108,15 +132,15 @@ public class OrderManageController {
 
     @PutMapping("/{orderId}/changeConsignee/{consigneeId}")
     public Object setConsigneeChange(HttpServletRequest request, @PathVariable Integer orderId, @PathVariable Integer consigneeId) {
-        if(permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC122.name)) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC122.name)) {
             Order orderInDB = orderService.getById(orderId);
             Dict data = Dict.create();
-            if(orderInDB.getIsSend() == 2) {
+            if (orderInDB.getIsSend() == 2) {
                 data.set("msg", "订单已发货，无法修改地址！");
                 return ResultData.fail(ReturnCode.RC999.code, ReturnCode.RC999.message, data);
             } else {
                 orderInDB.setConsigneeId(consigneeId);
-                if(orderService.updateById(orderInDB)) {
+                if (orderService.updateById(orderInDB)) {
                     data.set("msg", "订单地址修改成功！").set("order", orderInDB);
                     return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC201.message, data);
                 } else {

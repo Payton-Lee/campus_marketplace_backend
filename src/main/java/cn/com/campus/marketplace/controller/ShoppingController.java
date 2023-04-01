@@ -6,9 +6,11 @@ import cn.com.campus.marketplace.entity.Goods;
 import cn.com.campus.marketplace.entity.enums.PermissionCode;
 import cn.com.campus.marketplace.entity.enums.ReturnCode;
 import cn.com.campus.marketplace.entity.result.ResultData;
+import cn.com.campus.marketplace.mapper.AreaMapper;
 import cn.com.campus.marketplace.service.*;
 import cn.hutool.core.lang.Dict;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,21 +22,30 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/buy")
 public class ShoppingController {
+    @Autowired
     private OrderItemService orderItemService;
+    @Autowired
     private OrderService orderService;
+    @Autowired
     private CartService cartService;
+    @Autowired
     private GoodsService goodsService;
+    @Autowired
     private PermissionService permissionService;
+    @Autowired
     private UserService userService;
+    @Autowired
     private ConsigneeService consigneeService;
-
+    @Autowired
+    private AreaService areaService;
     @GetMapping("/goodsList")
     public Object getGoodsList(HttpServletRequest request, @RequestParam String queryInfo) {
-        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC124.name)) {
-            return goodsService.getGoodsList(queryInfo);
-        } else {
-            return ResultData.fail(ReturnCode.USERNAME_NOT_EXIST.code, ReturnCode.USERNAME_NOT_EXIST.message);
-        }
+//        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC124.name)) {
+//            return goodsService.getGoodsList(queryInfo);
+//        } else {
+//            return ResultData.fail(ReturnCode.USERNAME_NOT_EXIST.code, ReturnCode.USERNAME_NOT_EXIST.message);
+//        }
+        return goodsService.getGoodsList(queryInfo);
     }
 
     @PostMapping("/buyOneGoods")
@@ -63,6 +74,35 @@ public class ShoppingController {
         }
     }
 
+    @GetMapping("/getConsigneeList")
+    public Object getConsigneeList(HttpServletRequest request) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC126.name)) {
+            return consigneeService.findUserConsigneeByUserId(userService.getTokenUserId(request.getHeader("Authorization")));
+        } else {
+            return ResultData.fail(ReturnCode.USERNAME_NOT_EXIST.code, ReturnCode.USERNAME_NOT_EXIST.message);
+        }
+    }
+
+    @GetMapping("/getAreaList")
+    public Object getArea(HttpServletRequest request) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC126.name)) {
+           return areaService.list();
+        } else {
+            return ResultData.fail(ReturnCode.USERNAME_NOT_EXIST.code, ReturnCode.USERNAME_NOT_EXIST.message);
+        }
+    }
+
+    @PostMapping("/addNewConsignee")
+    public Object addNewConsignee(HttpServletRequest request, @RequestBody Consignee consignee) {
+        if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC126.name)) {
+            Integer userId = userService.getTokenUserId(request.getHeader("Authorization"));
+            consignee.setUserId(userId);
+            return consigneeService.saveNewConsignee(consignee);
+        } else {
+            return ResultData.fail(ReturnCode.USERNAME_NOT_EXIST.code, ReturnCode.USERNAME_NOT_EXIST.message);
+        }
+    }
+
     @PostMapping("/addCart")
     public Object addCart(HttpServletRequest request, @RequestBody Cart cart) {
         if (permissionService.verifyPermission(request.getHeader("Authorization"), PermissionCode.PC127.name)) {
@@ -71,7 +111,7 @@ public class ShoppingController {
             Dict data = Dict.create();
             if (cartService.addCart(cart)) {
                 data.set("msg", "添加购物车成功");
-                return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC200.message, data);
+                return ResultData.success(ReturnCode.RC201.code, ReturnCode.RC201.message, data);
             }
             return ResultData.fail(ReturnCode.RC999.code, ReturnCode.RC999.message);
         } else {

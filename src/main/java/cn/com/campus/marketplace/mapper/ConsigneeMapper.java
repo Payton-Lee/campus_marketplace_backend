@@ -27,13 +27,13 @@ public interface ConsigneeMapper extends BaseMapper<Consignee> {
     @Select("SELECT cm_consignee.id AS id, \n" +
             "cm_consignee.`name` AS receiver, \n" +
             "cm_consignee.telephone, \n" +
-            "area.`name` AS area, \n" +
-            "ps_consignee.address \n" +
+            "cm_area.`area` AS area, \n" +
+            "cm_consignee.address \n" +
             "FROM\n" +
             "cm_consignee, \n" +
-            "area \n" +
+            "cm_area \n" +
             "WHERE \n" +
-            "area.`code` = cm_consignee.area \n" +
+            "cm_area.`id` = cm_consignee.area \n" +
             "AND \n" +
             "cm_consignee.user_id = #{userId};")
     List<UserConsigneeVo> findUserConsigneeByUserId(Integer userId);

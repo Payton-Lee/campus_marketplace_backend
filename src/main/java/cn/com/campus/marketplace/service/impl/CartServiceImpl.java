@@ -5,6 +5,7 @@ import cn.com.campus.marketplace.mapper.CartMapper;
 import cn.com.campus.marketplace.service.CartService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,9 @@ import java.util.Objects;
 
 @Service
 public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements CartService {
+    @Autowired
     private CartMapper cartMapper;
+
     @Override
     public boolean addCart(Cart cart) {
         QueryWrapper<Cart> cartQueryWrapper = new QueryWrapper<>();
@@ -21,8 +24,10 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
         Cart cartInDB = getOne(cartQueryWrapper);
         if (Objects.isNull(cartInDB)) {
             return save(cart);
+        } else if (cart.getCount() == 0) {
+            return removeById(cartInDB);
         } else {
-            cartInDB.setCount(cartInDB.getCount() + cart.getCount());
+            cartInDB.setCount(cart.getCount());
             return updateById(cartInDB);
         }
     }
