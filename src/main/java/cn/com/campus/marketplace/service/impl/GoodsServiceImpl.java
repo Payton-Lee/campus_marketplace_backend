@@ -36,4 +36,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         wrapper.eq("is_deleted", 1).eq("goods_state", 1);
         return goodsMapper.findGoodsList(wrapper);
     }
+
+    @Override
+    public List<Goods> getGoodsListByIds(List<Integer> ids) {
+        Integer[] arrays = ids.toArray(new Integer[0]);
+        return goodsMapper.findGoodsListById(arrays);
+    }
 }

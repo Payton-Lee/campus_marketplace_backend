@@ -17,4 +17,10 @@ public class SalesDataServiceImpl extends ServiceImpl<SalesDataMapper, SalesData
     public List<SalesData> getAllSalesData() {
         return salesDataMapper.getSalesDataList();
     }
+
+    @Override
+    public List<SalesData> getSalesDataListByGoodsIds(List<Integer> ids) {
+        Integer[] arrays = ids.toArray(new Integer[0]);
+        return salesDataMapper.getSalesDataListByGoodsId(arrays);
+    }
 }

@@ -30,4 +30,18 @@ public interface GoodsMapper extends BaseMapper<Goods> {
             "g.goods_state as goodsState FROM cm_goods as g \n" +
             "LEFT JOIN cm_goods_image as i ON g.id = i.goods_id AND i.type = 1 ${ew.customSqlSegment}")
     <P extends IPage<Goods>> P findGoodsList(P page, @Param(Constants.WRAPPER) QueryWrapper<Goods> queryWrapper);
+
+
+//    @Select("SELECT cm_goods.id, cm_goods.in_stock\n" +
+//            "FROM cm_goods WHERE cm_goods.id\n" +
+//            "IN ( #{ids} );")
+    @Select({
+            "<script>",
+            "select * from cm_goods where id in ",
+            "<foreach collection='ids' item='id' open='(' separator=',' close=')'>",
+                "#{id}",
+            "</foreach>",
+            "</script>"
+    })
+    List<Goods> findGoodsListById(@Param("ids") Integer[] ids);
 }

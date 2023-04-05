@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface SalesDataService extends IService<SalesData> {
     List<SalesData> getAllSalesData();
+
+    List<SalesData> getSalesDataListByGoodsIds(List<Integer> ids);
 }

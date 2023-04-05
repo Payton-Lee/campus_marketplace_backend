@@ -9,4 +9,6 @@ import java.util.List;
 public interface GoodsService extends IService<Goods> {
     Page<Goods> pageGoodsList(Integer current, Integer size, String queryInfo);
     List<Goods> getGoodsList(String queryInfo);
+
+    List<Goods> getGoodsListByIds(List<Integer> ids);
 }

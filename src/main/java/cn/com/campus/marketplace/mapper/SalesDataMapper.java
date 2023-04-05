@@ -3,6 +3,7 @@ package cn.com.campus.marketplace.mapper;
 import cn.com.campus.marketplace.entity.SalesData;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -14,4 +15,14 @@ public interface SalesDataMapper extends BaseMapper<SalesData> {
             "goodsId from cm_sales_data, cm_goods " +
             "WHERE cm_sales_data.goods_id = cm_goods.id")
     List<SalesData> getSalesDataList();
+
+    @Select({
+            "<script>",
+            "select * from cm_sales_data where goods_id in ",
+            "<foreach collection='ids' item='id' open='(' separator=',' close=')'>",
+            "#{id}",
+            "</foreach>",
+            "</script>"
+    })
+    List<SalesData> getSalesDataListByGoodsId(@Param("ids") Integer[] ids);
 }
